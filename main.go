@@ -10,6 +10,12 @@ import (
 	"github.com/golang/glog"
 )
 
+const (
+	SPACE   = " "
+	TAB     = "\t"
+	NEWLINE = "\n"
+)
+
 func jsonToGo(jsonBytes []byte) (string, error) {
 	result := ""
 	dummy := ""
@@ -89,9 +95,10 @@ func parseScope(data interface{}) string {
 		}
 
 	} else if scope == "map[string]interface {}" {
-		result += parseStruct(data.(map[string]interface{}), nil)
+		result += SPACE + parseStruct(data.(map[string]interface{}), nil)
+		glog.Errorf("%#v", result)
 	} else {
-		result += scope
+		result += SPACE + scope
 	}
 
 	return result
@@ -99,21 +106,32 @@ func parseScope(data interface{}) string {
 
 func parseStruct(structFields map[string]interface{}, omitEmpty map[string]bool) string {
 	glog.Infoln("parseStruct: ", structFields)
-	result := " struct {\n"
+	result := "struct {" + NEWLINE
 	glog.Infoln(omitEmpty)
+	tabs := 0
 
 	for key, value := range structFields {
-		result += "\t"
-		result += makeFieldName(key) + " "
+		tabs++
+		result += indent(tabs)
+		result += makeFieldName(key)
 		temp := parseScope(value)
 		temp += " `json:\"" + key
 		if isOmitEmpty, ok := omitEmpty[key]; ok && isOmitEmpty {
 			temp += ",omitempty"
 		}
 		temp += "\"`"
-		result += temp + "\n"
+		result += temp + NEWLINE
 	}
 	result += "}"
+	glog.Errorf("%#v", result)
+	return result
+}
+
+func indent(tabs int) string {
+	result := ""
+	for i := 0; i < tabs; i++ {
+		result += TAB
+	}
 	return result
 }
 
