@@ -19,6 +19,7 @@ const (
 func jsonToGo(jsonBytes []byte) (string, error) {
 	result := ""
 	dummy := ""
+	tabs := 0
 	isValid := json.Valid(jsonBytes)
 	if !isValid {
 		return dummy, fmt.Errorf("json invalid")
@@ -35,10 +36,10 @@ func jsonToGo(jsonBytes []byte) (string, error) {
 
 	glog.Infoln(data)
 
-	return result + parseScope(data), nil
+	return result + parseScope(data, tabs), nil
 }
 
-func parseScope(data interface{}) string {
+func parseScope(data interface{}, tabs int) string {
 	glog.Errorf("parseSCope: %#v", data)
 	result := ""
 	scope := getType(data)
@@ -54,7 +55,7 @@ func parseScope(data interface{}) string {
 				break
 			}
 		}
-		slice := "[]"
+		slice := SPACE + "[]"
 		result += slice
 
 		if sliceType == "map[string]interface {}" { // struct in array
@@ -91,11 +92,11 @@ func parseScope(data interface{}) string {
 				structFields[keyname] = valueCount.Value
 				omitEmpty[keyname] = valueCount.Count != length
 			}
-			result += parseStruct(structFields, omitEmpty)
+			result += parseStruct(structFields, omitEmpty, tabs)
 		}
 
 	} else if scope == "map[string]interface {}" {
-		result += SPACE + parseStruct(data.(map[string]interface{}), nil)
+		result += SPACE + parseStruct(data.(map[string]interface{}), nil, tabs)
 		glog.Errorf("%#v", result)
 	} else {
 		result += SPACE + scope
@@ -104,17 +105,16 @@ func parseScope(data interface{}) string {
 	return result
 }
 
-func parseStruct(structFields map[string]interface{}, omitEmpty map[string]bool) string {
+func parseStruct(structFields map[string]interface{}, omitEmpty map[string]bool, tabs int) string {
 	glog.Infoln("parseStruct: ", structFields)
 	result := "struct {" + NEWLINE
 	glog.Infoln(omitEmpty)
-	tabs := 0
 
 	for key, value := range structFields {
 		tabs++
 		result += indent(tabs)
 		result += makeFieldName(key)
-		temp := parseScope(value)
+		temp := parseScope(value, tabs)
 		temp += " `json:\"" + key
 		if isOmitEmpty, ok := omitEmpty[key]; ok && isOmitEmpty {
 			temp += ",omitempty"
@@ -122,7 +122,8 @@ func parseStruct(structFields map[string]interface{}, omitEmpty map[string]bool)
 		temp += "\"`"
 		result += temp + NEWLINE
 	}
-	result += "}"
+	tabs--
+	result += indent(tabs) + "}"
 	glog.Errorf("%#v", result)
 	return result
 }
@@ -136,28 +137,11 @@ func indent(tabs int) string {
 }
 
 func getType(data interface{}) string {
-	// switch data.(type) {
-	// case int:
-	// 	return "int"
-	// case float64:
-	// 	return "float64"
-	// case string:
-	// 	return "string"
-	// case bool:
-	// 	return "bool"
-	// case []interface{}:
-	// 	return "[]interface{}"
-	// case map[string]interface{}:
-	// 	return "map[string]interface{}"
-	// default:
-	// 	return "interface{}"
-	// }
-
 	_type := fmt.Sprintf("%T", data)
 	if _type == "float64" {
 		value, errInt := strconv.ParseInt(fmt.Sprintf("%v", data.(float64)), 10, 64)
 		if errInt == nil {
-			if value <= 2147483648 || value >= -2147483648 {
+			if value < 2147483647 || value > -2147483648 {
 				return "int"
 			} else {
 				return "int64"
