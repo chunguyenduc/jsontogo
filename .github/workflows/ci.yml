@@ -26,7 +26,8 @@ jobs:
         run: |
           go test -v ./... -covermode=count -coverprofile=coverage.out
           go tool cover -func=coverage.out -o=coverage.out
+
       - name: Generate cover badge
-        run |
+        run: |
           chmod +x "${GITHUB_WORKSPACE}/.github/build_badge.sh"
           "${GITHUB_WORKSPACE}/.github/build_badge.sh"
