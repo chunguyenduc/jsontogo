@@ -99,7 +99,7 @@ func Test_jsonToGo(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := jsonToGo(tt.args.jsonBytes)
+			got, err := jsonToGo(tt.args.jsonBytes, "")
 			if (err != nil) != tt.wantErr {
 				t.Errorf("jsonToGo() error = %v, wantErr %v", err, tt.wantErr)
 				return
