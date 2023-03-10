@@ -31,3 +31,11 @@ jobs:
         run: |
           chmod +x "${GITHUB_WORKSPACE}/.github/build_badge.sh"
           "${GITHUB_WORKSPACE}/.github/build_badge.sh"
+          git fetch
+          git checkout badge -f
+          git pull
+          git merge origin/main --no-edit
+          curl "https://img.shields.io/badge/coverage-$total%25-$COLOR" > badge.svg
+          git add .
+          git commit -m "added badge"
+          git push
