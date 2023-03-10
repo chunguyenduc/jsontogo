@@ -13,13 +13,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "jsontogo",
 	Short: "jsontogo - a CLI to convert JSON to Go struct",
 	Long:  `jsontogo - a CLI to convert JSON to Go struct`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// fmt.Println(args)
 		var input []byte
 		fileInput, err := cmd.Flags().GetString("file_input")
 		if err != nil {
@@ -49,7 +47,7 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println(err)
 		}
-		print(result)
+		fmt.Println(result)
 	},
 }
 

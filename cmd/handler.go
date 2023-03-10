@@ -94,20 +94,21 @@ func parseScope(data interface{}, tabs int) string {
 
 func parseStruct(structFields map[string]interface{}, omitEmpty map[string]bool, tabs int) string {
 	result := "struct {" + NEWLINE
+	fmt.Println(structFields)
 
 	for key, value := range structFields {
 		tabs++
 		result += indent(tabs)
 		result += makeFieldName(key)
 		temp := parseScope(value, tabs)
-		temp += " `json:\"" + key
+		temp += SPACE + "`json:\"" + key
 		if isOmitEmpty, ok := omitEmpty[key]; ok && isOmitEmpty {
 			temp += ",omitempty"
 		}
 		temp += "\"`"
 		result += temp + NEWLINE
+		tabs--
 	}
-	tabs--
 	result += indent(tabs) + "}"
 	return result
 }
