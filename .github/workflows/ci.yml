@@ -33,8 +33,8 @@ jobs:
           "${GITHUB_WORKSPACE}/.github/build_badge.sh"
           git fetch
           git checkout -b badge 
-          git pull
-          git merge origin/main --no-edit
+          git pull origin ${GITHUB_REF##*/}
+          # git merge origin/main --no-edit
           curl "https://img.shields.io/badge/coverage-$total%25-$COLOR" > badge.svg
           git add .
           git commit -m "added badge"
