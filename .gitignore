@@ -1,1 +1,3 @@
 temp.go
+*.json
+init_cmd
