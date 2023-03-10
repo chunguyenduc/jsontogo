@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 )
 
@@ -78,7 +77,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		glog.Errorln(err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
 }
