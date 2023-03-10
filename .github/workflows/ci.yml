@@ -31,8 +31,11 @@ jobs:
         run: |
           chmod +x "${GITHUB_WORKSPACE}/.github/build_badge.sh"
           "${GITHUB_WORKSPACE}/.github/build_badge.sh"
+          
           git fetch
           git checkout -b badge 
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
           git pull origin ${GITHUB_REF##*/}
           # git merge origin/main --no-edit
           curl "https://img.shields.io/badge/coverage-$total%25-$COLOR" > badge.svg
