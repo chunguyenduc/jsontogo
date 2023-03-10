@@ -32,7 +32,7 @@ jobs:
           chmod +x "${GITHUB_WORKSPACE}/.github/build_badge.sh"
           "${GITHUB_WORKSPACE}/.github/build_badge.sh"
           git fetch
-          git checkout badge -f
+          git checkout badge -b
           git pull
           git merge origin/main --no-edit
           curl "https://img.shields.io/badge/coverage-$total%25-$COLOR" > badge.svg
