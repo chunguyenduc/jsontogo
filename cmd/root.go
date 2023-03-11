@@ -17,7 +17,6 @@ var rootCmd = &cobra.Command{
 	Short: "jsontogo - a CLI to convert JSON to Go struct",
 	Long:  `jsontogo - a CLI to convert JSON to Go struct`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(args)
 		var (
 			input      []byte
 			fileInput  string
@@ -83,9 +82,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringP("author", "a", "Duc Chu", "author name for copyright attribution")
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.Flags().StringP("file_input", "f", "", "Read input from JSON file")
-	rootCmd.Flags().StringP("file_output", "o", "", "Write output to Go file")
-	rootCmd.Flags().StringP("name", "n", "", "Name of struct")
+	rootCmd.Flags().StringP("file_input", "f", "", "read input from JSON file")
+	rootCmd.Flags().StringP("file_output", "o", "", "write output to Go file")
+	rootCmd.Flags().StringP("name", "n", "", "name of struct")
 }
