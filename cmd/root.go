@@ -4,7 +4,7 @@ Copyright © 2023 Duc Chu nguyenducchu1999@gmail.com
 package cmd
 
 import (
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -23,7 +23,6 @@ var rootCmd = &cobra.Command{
 			fileOutput string
 			structName string
 			err        error
-			importFunc func(string) ([]byte, error)
 		)
 		if fileInput, err = cmd.Flags().GetString("file_input"); err != nil {
 			return err
@@ -46,15 +45,13 @@ var rootCmd = &cobra.Command{
 			input = []byte(args[len(args)-1])
 		}
 
-		structBuilder := NewStructBuilder(input, fileOutput, structName, importFunc)
-
-		return structBuilder.Run()
+		return NewStructBuilder(input, fileOutput, structName).Run()
 	},
 }
 
 func openFile(input string) ([]byte, error) {
 	if ext := filepath.Ext(input); ext != ".json" {
-		return nil, errors.New("error: not JSON file")
+		return nil, fmt.Errorf("open %v: not JSON file", input)
 	}
 	jsonFile, err := os.Open(input)
 	if err != nil {

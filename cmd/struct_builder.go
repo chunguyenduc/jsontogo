@@ -16,7 +16,7 @@ type structBuilder struct {
 	StructName string
 }
 
-func NewStructBuilder(input []byte, fileOutput string, name string, importFunc func(string) ([]byte, error)) StructBuilder {
+func NewStructBuilder(input []byte, fileOutput string, name string) StructBuilder {
 	return &structBuilder{
 		Input:      input,
 		FileOutput: fileOutput,
@@ -25,9 +25,7 @@ func NewStructBuilder(input []byte, fileOutput string, name string, importFunc f
 }
 
 func (s *structBuilder) Run() error {
-	var (
-		err error
-	)
+	var err error
 
 	s.Output, err = jsonToGo(s.Input, s.StructName)
 	if err != nil {
