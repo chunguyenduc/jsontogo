@@ -1,11 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +13,6 @@ type Config struct {
 
 func ParseConfig(cmd *cobra.Command, args []string) (*Config, error) {
 	var (
-		input      []byte
 		fileInput  string
 		fileOutput string
 		structName string
@@ -36,32 +30,10 @@ func ParseConfig(cmd *cobra.Command, args []string) (*Config, error) {
 		return nil, err
 	}
 
-	if len(fileInput) > 0 {
-		input, err = openFile(fileInput)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		input = []byte(args[len(args)-1])
-	}
-
 	return &Config{
-		Input:      input,
+		Input:      []byte(args[len(args)-1]),
 		FileInput:  fileInput,
 		FileOutput: fileOutput,
 		StructName: structName,
 	}, nil
-}
-
-func openFile(input string) ([]byte, error) {
-	if ext := filepath.Ext(input); ext != ".json" {
-		return nil, fmt.Errorf("open %v: not JSON file", input)
-	}
-	jsonFile, err := os.Open(input)
-	if err != nil {
-		return nil, err
-	}
-	defer jsonFile.Close()
-
-	return ioutil.ReadAll(jsonFile)
 }

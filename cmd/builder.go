@@ -1,24 +1,19 @@
 package cmd
 
 type StructBuilder interface {
-	Build() (string, error)
+	Build([]byte) (string, error)
 }
 
 type structBuilder struct {
-	Input      []byte
-	Output     string
-	FileOutput string
 	StructName string
 }
 
-func NewStructBuilder(input []byte, fileOutput string, name string) StructBuilder {
+func NewStructBuilder(conf *Config) StructBuilder {
 	return &structBuilder{
-		Input:      input,
-		FileOutput: fileOutput,
-		StructName: name,
+		StructName: conf.StructName,
 	}
 }
 
-func (s *structBuilder) Build() (string, error) {
-	return BuildJSONToGo(s.Input, s.StructName)
+func (s *structBuilder) Build(input []byte) (string, error) {
+	return BuildJSONToGo(input, s.StructName)
 }

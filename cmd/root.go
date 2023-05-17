@@ -18,10 +18,11 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		structBuilder := NewStructBuilder(conf.Input, conf.FileInput, conf.StructName)
-		structExporter := NewStructExporter(conf.FileOutput)
+		structImporter := NewStructImporter(conf, os.Open)
+		structBuilder := NewStructBuilder(conf)
+		structExporter := NewStructExporter(conf, os.Create)
 
-		app := NewApplication(structBuilder, structExporter)
+		app := NewApplication(structImporter, structBuilder, structExporter)
 		return app.RunApp()
 	},
 }

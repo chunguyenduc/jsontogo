@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bufio"
+	"io"
 	"os"
 )
 
@@ -10,31 +11,35 @@ type StructExporter interface {
 }
 
 type structExport struct {
-	Filename string
+	Filename      string
+	ReadWriter    io.ReadWriteCloser
+	ReadWriteFunc func(string) (*os.File, error)
 }
 
-func NewStructExporter(filename string) StructExporter {
+func NewStructExporter(conf *Config, readWriteFunc func(string) (*os.File, error)) StructExporter {
 	return &structExport{
-		Filename: filename,
+		Filename:      conf.FileOutput,
+		ReadWriteFunc: readWriteFunc,
 	}
 }
 
 func (s *structExport) Export(content string) (int, error) {
 	var (
-		writer *os.File
+		writer io.ReadWriteCloser
 		err    error
 	)
 	if len(s.Filename) > 0 {
-		writer, err = os.Create(s.Filename)
+		writer, err = s.ReadWriteFunc(s.Filename)
 		if err != nil {
 			return 0, err
 		}
+
 	} else {
 		writer = os.Stdout
 		content = "\n" + content
 	}
-	defer writer.Close()
 
+	defer writer.Close()
 	f := bufio.NewWriter(writer)
 	defer f.Flush()
 	return f.Write([]byte(content))
