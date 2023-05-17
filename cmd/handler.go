@@ -13,7 +13,7 @@ const (
 	NEWLINE = "\n"
 )
 
-func jsonToGo(jsonBytes []byte, name string) (string, error) {
+func BuildJSONToGo(jsonBytes []byte, name string) (string, error) {
 	var (
 		result     string
 		dummy      string

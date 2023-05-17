@@ -2,7 +2,7 @@ package cmd
 
 import "testing"
 
-func Test_jsonToGo(t *testing.T) {
+func Test_BuildBuildJSONToGo(t *testing.T) {
 	type args struct {
 		jsonBytes []byte
 	}
@@ -99,13 +99,13 @@ func Test_jsonToGo(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := jsonToGo(tt.args.jsonBytes, "")
+			got, err := BuildJSONToGo(tt.args.jsonBytes, "")
 			if (err != nil) != tt.wantErr {
-				t.Errorf("jsonToGo() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BuildBuildJSONToGo() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("jsonToGo() = %#v, want %#v", got, tt.want)
+				t.Errorf("BuildBuildJSONToGo() = %#v, want %#v", got, tt.want)
 			}
 		})
 	}

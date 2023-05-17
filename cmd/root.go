@@ -4,10 +4,7 @@ Copyright © 2023 Duc Chu nguyenducchu1999@gmail.com
 package cmd
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
-	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -17,49 +14,16 @@ var rootCmd = &cobra.Command{
 	Short: "jsontogo - a CLI to convert JSON to Go struct",
 	Long:  `jsontogo - a CLI to convert JSON to Go struct`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		var (
-			input      []byte
-			fileInput  string
-			fileOutput string
-			structName string
-			err        error
-		)
-		if fileInput, err = cmd.Flags().GetString("file_input"); err != nil {
+		conf, err := ParseConfig(cmd, args)
+		if err != nil {
 			return err
 		}
+		structBuilder := NewStructBuilder(conf.Input, conf.FileInput, conf.FileInput)
+		structExporter := NewStructExporter(conf.FileOutput)
 
-		if fileOutput, err = cmd.Flags().GetString("file_output"); err != nil {
-			return err
-		}
-
-		if structName, err = cmd.Flags().GetString("name"); err != nil {
-			return err
-		}
-
-		if len(fileInput) > 0 {
-			input, err = openFile(fileInput)
-			if err != nil {
-				return err
-			}
-		} else {
-			input = []byte(args[len(args)-1])
-		}
-
-		return NewStructBuilder(input, fileOutput, structName).Run()
+		app := NewApplication(structBuilder, structExporter)
+		return app.RunApp()
 	},
-}
-
-func openFile(input string) ([]byte, error) {
-	if ext := filepath.Ext(input); ext != ".json" {
-		return nil, fmt.Errorf("open %v: not JSON file", input)
-	}
-	jsonFile, err := os.Open(input)
-	if err != nil {
-		return nil, err
-	}
-	defer jsonFile.Close()
-
-	return ioutil.ReadAll(jsonFile)
 }
 
 func Execute() {
