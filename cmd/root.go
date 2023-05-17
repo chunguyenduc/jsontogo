@@ -18,7 +18,7 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		structBuilder := NewStructBuilder(conf.Input, conf.FileInput, conf.FileInput)
+		structBuilder := NewStructBuilder(conf.Input, conf.FileInput, conf.StructName)
 		structExporter := NewStructExporter(conf.FileOutput)
 
 		app := NewApplication(structBuilder, structExporter)
