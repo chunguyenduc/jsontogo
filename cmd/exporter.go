@@ -31,6 +31,7 @@ func (s *structExport) Export(content string) (int, error) {
 		}
 	} else {
 		writer = os.Stdout
+		content = "\n" + content
 	}
 	defer writer.Close()
 
