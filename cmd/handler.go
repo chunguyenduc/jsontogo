@@ -21,10 +21,6 @@ func jsonToGo(jsonBytes []byte, name string) (string, error) {
 		structName string
 	)
 
-	if isValid := json.Valid(jsonBytes); !isValid {
-		return dummy, fmt.Errorf("json invalid")
-	}
-
 	var data interface{}
 	if err := json.Unmarshal(jsonBytes, &data); err != nil {
 		return dummy, err

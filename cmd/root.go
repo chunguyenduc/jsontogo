@@ -4,7 +4,7 @@ Copyright © 2023 Duc Chu nguyenducchu1999@gmail.com
 package cmd
 
 import (
-	"fmt"
+	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -16,67 +16,57 @@ var rootCmd = &cobra.Command{
 	Use:   "jsontogo",
 	Short: "jsontogo - a CLI to convert JSON to Go struct",
 	Long:  `jsontogo - a CLI to convert JSON to Go struct`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
 			input      []byte
 			fileInput  string
 			fileOutput string
 			structName string
-			result     string
 			err        error
+			importFunc func(string) ([]byte, error)
 		)
 		if fileInput, err = cmd.Flags().GetString("file_input"); err != nil {
-			fmt.Println(err)
+			return err
+		}
+
+		if fileOutput, err = cmd.Flags().GetString("file_output"); err != nil {
+			return err
+		}
+
+		if structName, err = cmd.Flags().GetString("name"); err != nil {
+			return err
 		}
 
 		if len(fileInput) > 0 {
-			fileExtension := filepath.Ext(fileInput)
-			if fileExtension != ".json" {
-				fmt.Printf("Error: not JSON file")
-			} else {
-				jsonFile, err := os.Open(fileInput)
-				if err != nil {
-					fmt.Println(err)
-				}
-				defer jsonFile.Close()
-				input, _ = ioutil.ReadAll(jsonFile)
+			input, err = openFile(fileInput)
+			if err != nil {
+				return err
 			}
 		} else {
 			input = []byte(args[len(args)-1])
 		}
 
-		if structName, err = cmd.Flags().GetString("name"); err != nil {
-			fmt.Println(err)
-		}
+		structBuilder := NewStructBuilder(input, fileOutput, structName, importFunc)
 
-		result, err = jsonToGo(input, structName)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		if fileOutput, err = cmd.Flags().GetString("file_output"); err != nil {
-			fmt.Println(err)
-		}
-		if len(fileOutput) > 0 {
-			f, err := os.Create(fileOutput)
-			if err != nil {
-				fmt.Println(err)
-			}
-			defer f.Close()
-
-			if _, err = f.WriteString(result); err != nil {
-				fmt.Println(err)
-			}
-		} else {
-			fmt.Println(result)
-
-		}
+		return structBuilder.Run()
 	},
+}
+
+func openFile(input string) ([]byte, error) {
+	if ext := filepath.Ext(input); ext != ".json" {
+		return nil, errors.New("error: not JSON file")
+	}
+	jsonFile, err := os.Open(input)
+	if err != nil {
+		return nil, err
+	}
+	defer jsonFile.Close()
+
+	return ioutil.ReadAll(jsonFile)
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }
