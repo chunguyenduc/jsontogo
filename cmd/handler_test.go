@@ -101,11 +101,11 @@ func Test_BuildBuildJSONToGo(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := BuildJSONToGo(tt.args.jsonBytes, "")
 			if (err != nil) != tt.wantErr {
-				t.Errorf("BuildBuildJSONToGo() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BuildJSONToGo() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("BuildBuildJSONToGo() = %#v, want %#v", got, tt.want)
+				t.Errorf("BuildJSONToGo() = %#v, want %#v", got, tt.want)
 			}
 		})
 	}
