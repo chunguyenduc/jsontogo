@@ -17,7 +17,6 @@ func Test_openFile(t *testing.T) {
 		want    []byte
 		wantErr bool
 	}{
-		TODO: Add test cases.
 		{
 			args: args{
 				input: "data.son",
