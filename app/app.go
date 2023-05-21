@@ -1,4 +1,4 @@
-package cmd
+package app
 
 type Application struct {
 	Importer StructImporter

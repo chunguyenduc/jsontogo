@@ -1,4 +1,4 @@
-package cmd
+package app
 
 type StructBuilder interface {
 	Build([]byte) (string, error)

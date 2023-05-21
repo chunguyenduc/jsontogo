@@ -6,6 +6,7 @@ package cmd
 import (
 	"os"
 
+	"github.com/chunguyenduc/jsontogo/app"
 	"github.com/spf13/cobra"
 )
 
@@ -15,15 +16,15 @@ func RootCmd() *cobra.Command {
 		Short: "jsontogo - a CLI to convert JSON to Go struct",
 		Long:  `jsontogo - a CLI to convert JSON to Go struct`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conf, err := ParseConfig(cmd, args)
+			conf, err := app.ParseConfig(cmd, args)
 			if err != nil {
 				return err
 			}
-			structImporter := NewStructImporter(conf, os.Open)
-			structBuilder := NewStructBuilder(conf)
-			structExporter := NewStructExporter(conf, os.Create)
+			structImporter := app.NewStructImporter(conf, os.Open)
+			structBuilder := app.NewStructBuilder(conf)
+			structExporter := app.NewStructExporter(conf, os.Create)
 
-			app := NewApplication(structImporter, structBuilder, structExporter)
+			app := app.NewApplication(structImporter, structBuilder, structExporter)
 			return app.RunApp()
 		},
 	}
