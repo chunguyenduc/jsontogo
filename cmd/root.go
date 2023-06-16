@@ -6,7 +6,11 @@ package cmd
 import (
 	"os"
 
-	"github.com/chunguyenduc/jsontogo/app"
+	"github.com/chunguyenduc/jsontogo/internal/app"
+	"github.com/chunguyenduc/jsontogo/internal/builder"
+	"github.com/chunguyenduc/jsontogo/internal/config"
+	"github.com/chunguyenduc/jsontogo/internal/exporter"
+	"github.com/chunguyenduc/jsontogo/internal/importer"
 	"github.com/spf13/cobra"
 )
 
@@ -16,15 +20,15 @@ func RootCmd() *cobra.Command {
 		Short: "jsontogo - a CLI to convert JSON to Go struct",
 		Long:  `jsontogo - a CLI to convert JSON to Go struct`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			conf, err := app.ParseConfig(cmd, args)
+			conf, err := config.ParseConfig(cmd, args)
 			if err != nil {
 				return err
 			}
-			structImporter := app.NewStructImporter(conf, os.Open)
-			structBuilder := app.NewStructBuilder(conf)
-			structExporter := app.NewStructExporter(conf, os.Create)
+			importer := importer.NewImporter(conf, os.Open)
+			builder := builder.NewBuilder(conf)
+			exporter := exporter.NewExporter(conf, os.Create)
 
-			app := app.NewApplication(structImporter, structBuilder, structExporter)
+			app := app.NewApplication(importer, builder, exporter)
 			return app.RunApp()
 		},
 	}

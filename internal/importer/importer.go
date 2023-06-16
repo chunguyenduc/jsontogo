@@ -1,4 +1,4 @@
-package app
+package importer
 
 import (
 	"fmt"
@@ -6,9 +6,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/chunguyenduc/jsontogo/internal/config"
 )
 
-type StructImporter interface {
+type Importer interface {
 	Import() ([]byte, error)
 }
 
@@ -19,7 +21,7 @@ type structImport struct {
 	ReaderFunc func(string) (*os.File, error)
 }
 
-func NewStructImporter(conf *Config, readerFunc func(string) (*os.File, error)) StructImporter {
+func NewImporter(conf *config.Config, readerFunc func(string) (*os.File, error)) Importer {
 	return &structImport{
 		Input:      conf.Input,
 		Filename:   conf.FileInput,

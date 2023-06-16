@@ -1,4 +1,4 @@
-package app
+package handler
 
 import (
 	"encoding/json"
@@ -37,11 +37,16 @@ func BuildJSONToGo(jsonBytes []byte, name string) (string, error) {
 }
 
 func parseScope(data interface{}, tabs int) string {
-	result := ""
-	scope := getType(data)
+	var (
+		result string
+		scope  = getType(data)
+	)
 	if scope == "[]interface {}" {
-		dataArray := data.([]interface{})
-		sliceType := ""
+		var (
+			dataArray = data.([]interface{})
+			sliceType = ""
+		)
+
 		for _, d := range dataArray {
 			_type := getType(d)
 			if len(sliceType) == 0 {
@@ -59,8 +64,11 @@ func parseScope(data interface{}, tabs int) string {
 				Value interface{}
 				Count int
 			}
-			mapAllFields := make(map[string]*ValueCount)
-			length := len(dataArray)
+			var (
+				mapAllFields = make(map[string]*ValueCount)
+				length       = len(dataArray)
+			)
+
 			for _, d := range dataArray {
 				for k, v := range d.(map[string]interface{}) {
 					valueCount, ok := mapAllFields[k]
@@ -75,8 +83,10 @@ func parseScope(data interface{}, tabs int) string {
 				}
 			}
 
-			omitEmpty := make(map[string]bool)
-			structFields := make(map[string]interface{})
+			var (
+				omitEmpty    = make(map[string]bool)
+				structFields = make(map[string]interface{})
+			)
 
 			for keyname, valueCount := range mapAllFields {
 				structFields[keyname] = valueCount.Value

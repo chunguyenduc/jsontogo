@@ -1,6 +1,9 @@
-package app
+package config
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
@@ -12,6 +15,9 @@ type Config struct {
 }
 
 func ParseConfig(cmd *cobra.Command, args []string) (*Config, error) {
+	if len(args) == 0 {
+		return nil, errors.New("Not enough arguments")
+	}
 	var (
 		fileInput  string
 		fileOutput string
@@ -19,6 +25,7 @@ func ParseConfig(cmd *cobra.Command, args []string) (*Config, error) {
 		err        error
 	)
 	if fileInput, err = cmd.Flags().GetString("file_input"); err != nil {
+		fmt.Printf("%v %v\n", cmd, err)
 		return nil, err
 	}
 

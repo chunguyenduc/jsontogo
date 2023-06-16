@@ -1,12 +1,14 @@
-package app
+package exporter
 
 import (
 	"bufio"
 	"io"
 	"os"
+
+	"github.com/chunguyenduc/jsontogo/internal/config"
 )
 
-type StructExporter interface {
+type Exporter interface {
 	Export(string) (int, error)
 }
 
@@ -16,7 +18,7 @@ type structExport struct {
 	ReadWriteFunc func(string) (*os.File, error)
 }
 
-func NewStructExporter(conf *Config, readWriteFunc func(string) (*os.File, error)) StructExporter {
+func NewExporter(conf *config.Config, readWriteFunc func(string) (*os.File, error)) Exporter {
 	return &structExport{
 		Filename:      conf.FileOutput,
 		ReadWriteFunc: readWriteFunc,

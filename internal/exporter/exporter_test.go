@@ -1,4 +1,4 @@
-package app
+package exporter
 
 import (
 	"fmt"
@@ -6,11 +6,12 @@ import (
 	"os"
 	"testing"
 
+	"github.com/chunguyenduc/jsontogo/internal/config"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewStructExporter(t *testing.T) {
-	e := NewStructExporter(&Config{}, nil)
+	e := NewExporter(&config.Config{}, nil)
 	assert.NotNil(t, e)
 }
 

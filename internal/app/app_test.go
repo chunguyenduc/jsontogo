@@ -37,7 +37,7 @@ func TestApplication_RunApp(t *testing.T) {
 		Import().
 		Return([]byte("byte"), nil).AnyTimes()
 
-	builder := NewMockStructBuilder(ctrl)
+	builder := NewMockBuilder(ctrl)
 	builder.
 		EXPECT().
 		Build(gomock.Any()).
@@ -144,31 +144,31 @@ func (mr *MockStructExporterMockRecorder) Export(arg0 interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Export", reflect.TypeOf((*MockStructExporter)(nil).Export), arg0)
 }
 
-// MockStructBuilder is a mock of StructBuilder interface.
-type MockStructBuilder struct {
+// MockBuilder is a mock of Builder interface.
+type MockBuilder struct {
 	ctrl     *gomock.Controller
-	recorder *MockStructBuilderMockRecorder
+	recorder *MockBuilderMockRecorder
 }
 
-// MockStructBuilderMockRecorder is the mock recorder for MockStructBuilder.
-type MockStructBuilderMockRecorder struct {
-	mock *MockStructBuilder
+// MockBuilderMockRecorder is the mock recorder for MockBuilder.
+type MockBuilderMockRecorder struct {
+	mock *MockBuilder
 }
 
-// NewMockStructBuilder creates a new mock instance.
-func NewMockStructBuilder(ctrl *gomock.Controller) *MockStructBuilder {
-	mock := &MockStructBuilder{ctrl: ctrl}
-	mock.recorder = &MockStructBuilderMockRecorder{mock}
+// NewMockBuilder creates a new mock instance.
+func NewMockBuilder(ctrl *gomock.Controller) *MockBuilder {
+	mock := &MockBuilder{ctrl: ctrl}
+	mock.recorder = &MockBuilderMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockStructBuilder) EXPECT() *MockStructBuilderMockRecorder {
+func (m *MockBuilder) EXPECT() *MockBuilderMockRecorder {
 	return m.recorder
 }
 
 // Build mocks base method.
-func (m *MockStructBuilder) Build(arg0 []byte) (string, error) {
+func (m *MockBuilder) Build(arg0 []byte) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Build", arg0)
 	ret0, _ := ret[0].(string)
@@ -177,7 +177,7 @@ func (m *MockStructBuilder) Build(arg0 []byte) (string, error) {
 }
 
 // Build indicates an expected call of Build.
-func (mr *MockStructBuilderMockRecorder) Build(arg0 interface{}) *gomock.Call {
+func (mr *MockBuilderMockRecorder) Build(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Build", reflect.TypeOf((*MockStructBuilder)(nil).Build), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Build", reflect.TypeOf((*MockBuilder)(nil).Build), arg0)
 }
