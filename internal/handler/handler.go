@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -106,8 +107,13 @@ func parseScope(data interface{}, tabs int) string {
 
 func parseStruct(structFields map[string]interface{}, omitEmpty map[string]bool, tabs int) string {
 	result := "struct {" + NEWLINE
-
-	for key, value := range structFields {
+	keys := make([]string, 0, len(structFields))
+	for k := range structFields {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		value := structFields[key]
 		tabs++
 		result += indent(tabs)
 		result += makeFieldName(key)
